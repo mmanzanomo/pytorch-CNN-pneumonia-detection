@@ -7,6 +7,8 @@ import torch.nn as nn
 
 from utils import check_device
 
+torch.manual_seed(2024)
+np.random.seed(2024)
 
 
 def save_checkpoint(model, epoch, optimizer, best_acc):
@@ -22,7 +24,7 @@ def save_checkpoint(model, epoch, optimizer, best_acc):
     Returns:
         None
 
-    The saved checkpoint is stored in the '../models/cnn_basic_1_checkpoint.pth.tar' file.
+    The saved checkpoint is stored in the '../models/model_checkpoint.pth.tar' file.
     """
     state = {
         'epoch': epoch+1,
@@ -30,7 +32,7 @@ def save_checkpoint(model, epoch, optimizer, best_acc):
         'optimizer': optimizer.state_dict(),
         'accuracy': best_acc,
     }
-    torch.save( state, '../models/cnn_basic_1_checkpoint.pth.tar')
+    torch.save( state, '../models/model_checkpoint.pth.tar')
 
 
 def train_loop(dataloader, model, criterion, optimizer):
@@ -75,7 +77,7 @@ def train_loop(dataloader, model, criterion, optimizer):
         if (batch) % 32 == 0:
             loss, current = loss.item(), batch * len(y)
             print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
-    
+
     correct /= size
     t_acc = (100*correct)
     
@@ -136,7 +138,7 @@ def test_loop(dataloader, model, criterion):
     return accuracy, test_loss, flat_true_list, flat_pred_list
 
 
-def train_model(model, train_dataloader, valid_dataloader, criterion, optimizer, num_epochs=5):
+def train_model(model, train_dataloader, valid_dataloader, criterion, optimizer, scheduler, num_epochs=5):
     """
     Train the model using the provided training and validation data.
 
@@ -156,7 +158,7 @@ def train_model(model, train_dataloader, valid_dataloader, criterion, optimizer,
     """
     best_acc = 0
     since = time.time()
-    early_stop = 6
+    early_stop = 10
     stop = 0
     history = []
     
@@ -165,6 +167,7 @@ def train_model(model, train_dataloader, valid_dataloader, criterion, optimizer,
         train_loss, train_acc = train_loop(train_dataloader, model, criterion, optimizer)
         test_acc, test_loss, _, _ = test_loop(valid_dataloader, model, criterion)
         
+        scheduler.step(test_loss)
         history.append([ np.mean(train_loss), test_loss, train_acc, test_acc])
         
         if(test_acc > best_acc):
