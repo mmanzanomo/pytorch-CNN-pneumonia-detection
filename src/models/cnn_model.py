@@ -7,8 +7,8 @@ import torch.nn as nn
 
 from utils import check_device
 
-torch.manual_seed(2024)
-np.random.seed(2024)
+torch.manual_seed(124)
+np.random.seed(124)
 
 
 def save_checkpoint(model, epoch, optimizer, best_acc):
@@ -74,7 +74,7 @@ def train_loop(dataloader, model, criterion, optimizer):
         loss.backward()
         optimizer.step()
 
-        if (batch) % 32 == 0:
+        if (batch) % 64 == 0:
             loss, current = loss.item(), batch * len(y)
             print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
 
@@ -158,7 +158,7 @@ def train_model(model, train_dataloader, valid_dataloader, criterion, optimizer,
     """
     best_acc = 0
     since = time.time()
-    early_stop = 10
+    early_stop = 6
     stop = 0
     history = []
     
