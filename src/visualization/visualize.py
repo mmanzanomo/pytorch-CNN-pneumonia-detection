@@ -236,4 +236,4 @@ def classify_random_image(model, image_transform, test_path, classes, device='cp
     _, pred = torch.max(output.data, 1)
     
     print(f'image: {sample[0]}\npred: {classes[pred.item()]}')
-    print(f'-Softmax: \nNormal: {(soft[0][0]):.4f} | Virus: {(soft[0][1]):.4f} | Bacteria: {(soft[0][2]):.4f}')
+    print(f'-Softmax: \nNormal: {(soft[0][0]):.4f} | Bacteria: {(soft[0][1]):.4f} | Virus: {(soft[0][2]):.4f}')
