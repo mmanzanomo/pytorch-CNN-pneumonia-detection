@@ -7,8 +7,8 @@ import torch.nn as nn
 
 from utils import check_device
 
-torch.manual_seed(124)
-np.random.seed(124)
+torch.manual_seed(585)
+np.random.seed(585)
 
 
 def save_checkpoint(model, epoch, optimizer, best_acc):
@@ -158,7 +158,7 @@ def train_model(model, train_dataloader, valid_dataloader, criterion, optimizer,
     """
     best_acc = 0
     since = time.time()
-    early_stop = 6
+    early_stop = 10
     stop = 0
     history = []
     
@@ -222,7 +222,7 @@ class CNN_NeuralNetwork(nn.Module):
     Output:
         - logits (torch.Tensor): Output tensor with shape (batch_size, 3), representing class logits.
     """
-    def __init__(self, in_channels=1, out_channels_1=16, out_channels_2=64 ):
+    def __init__(self, in_channels=1, out_channels_1=32, out_channels_2=64):
         super(CNN_NeuralNetwork, self).__init__()
         self.conv2d_stack = nn.Sequential(
             nn.Conv2d(in_channels=in_channels,
@@ -252,13 +252,22 @@ class CNN_NeuralNetwork(nn.Module):
         )
         self.flatten = nn.Flatten()
         self.linear_stack = nn.Sequential(
-            nn.Linear((out_channels_2*2)*32*32, 128),  # (in_features, out_features)  
+            nn.Linear((out_channels_2*2)*32*32, 128), 
             nn.ReLU(),
-            nn.Linear(128, 96),
+            #nn.Dropout(p=0.5, inplace=False),
+            #nn.Linear(256, 128),
+            #nn.ReLU(),
+            #nn.Dropout(p=0.5, inplace=False),
+            nn.Linear(128, 48),
             nn.ReLU(),
-            nn.Linear(96, 32),
+            #nn.Dropout(p=0.5, inplace=False),
+            nn.Linear(48, 24),
             nn.ReLU(),
-            nn.Linear(32, 3),  # n inputs and 3 possible outputs corresponding to the labels.
+            nn.Dropout(p=0.5, inplace=False),
+            nn.Linear(24, 3),  
+            #nn.ReLU(),
+            #nn.Dropout(p=0.5, inplace=False),
+            #nn.Linear(16, 3),  
         )
 
     def forward(self, x):
