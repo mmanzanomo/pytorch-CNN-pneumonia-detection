@@ -74,7 +74,7 @@ def train_loop(dataloader, model, criterion, optimizer):
         loss.backward()
         optimizer.step()
 
-        if (batch) % 64 == 0:
+        if (batch) % 32 == 0:
             loss, current = loss.item(), batch * len(y)
             print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
 
@@ -258,16 +258,16 @@ class CNN_NeuralNetwork(nn.Module):
             #nn.Linear(256, 128),
             #nn.ReLU(),
             #nn.Dropout(p=0.5, inplace=False),
-            nn.Linear(128, 48),
-            nn.ReLU(),
-            #nn.Dropout(p=0.5, inplace=False),
-            nn.Linear(48, 24),
+            nn.Linear(128, 94),
             nn.ReLU(),
             nn.Dropout(p=0.5, inplace=False),
-            nn.Linear(24, 3),  
-            #nn.ReLU(),
+            nn.Linear(94, 62),
+            nn.ReLU(),
             #nn.Dropout(p=0.5, inplace=False),
-            #nn.Linear(16, 3),  
+            nn.Linear(62, 21),  
+            nn.ReLU(),
+            nn.Dropout(p=0.5, inplace=False),
+            nn.Linear(21, 3),  
         )
 
     def forward(self, x):
