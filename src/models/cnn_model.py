@@ -7,9 +7,6 @@ import torch.nn as nn
 
 from utils import check_device
 
-torch.manual_seed(585)
-np.random.seed(585)
-
 
 def save_checkpoint(model, epoch, optimizer, best_acc):
     """
@@ -252,21 +249,18 @@ class CNN_NeuralNetwork(nn.Module):
         )
         self.flatten = nn.Flatten()
         self.linear_stack = nn.Sequential(
-            nn.Linear((out_channels_2*2)*32*32, 128), 
+            nn.Linear((out_channels_2*2)*32*32, 128),
             nn.ReLU(),
-            #nn.Dropout(p=0.5, inplace=False),
-            #nn.Linear(256, 128),
-            #nn.ReLU(),
-            #nn.Dropout(p=0.5, inplace=False),
+            nn.Dropout(p=0.5, inplace=False),
             nn.Linear(128, 94),
             nn.ReLU(),
             nn.Dropout(p=0.5, inplace=False),
             nn.Linear(94, 62),
             nn.ReLU(),
-            #nn.Dropout(p=0.5, inplace=False),
-            nn.Linear(62, 21),  
-            nn.ReLU(),
             nn.Dropout(p=0.5, inplace=False),
+            nn.Linear(62, 21),
+            nn.ReLU(),
+            #nn.Dropout(p=0.5, inplace=False),
             nn.Linear(21, 3),  
         )
 
